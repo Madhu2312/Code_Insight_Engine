@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.env/
+
+# Secrets
+.env
+*.env
+
+# Vector DB (VERY IMPORTANT)
+vectordb/
+data/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Session files
+current_session.txt
+session_meta.json
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
