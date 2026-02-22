@@ -149,7 +149,7 @@ def ask_question(question: str) -> str:
 
     try:
         llm = ChatGroq(
-            model="llama3-8b-8192",
+            model="llama3-8b-instant",
             temperature=0,
             groq_api_key=groq_key
         )
