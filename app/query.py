@@ -154,8 +154,8 @@ def ask_question(question: str) -> str:
             groq_api_key=groq_key
         )
     except Exception as e:
-    import traceback
-    return f"LLM INIT ERROR:\n{traceback.format_exc()}"
+        import traceback
+        return f"LLM INIT ERROR:\n{traceback.format_exc()}"
 
 
 
