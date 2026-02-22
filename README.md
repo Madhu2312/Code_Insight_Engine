@@ -111,7 +111,7 @@ The project implements a **Retrieval-Augmented Generation (RAG) pipeline** for s
 ### 1. Clone this project
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/code-insight-engine.git
+git clone https://github.com/Madhu2312/code-insight-engine.git
 cd code-insight-engine
 ```
 
