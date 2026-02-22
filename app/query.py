@@ -131,11 +131,21 @@ def ask_question(question: str) -> str:
 
     context = "\n\n----------------------\n\n".join(context_blocks)
 
-    try:
-        import streamlit as st
+    
+
+    groq_key = None
+
+
+    if "GROQ_API_KEY" in st.secrets:
         groq_key = st.secrets["GROQ_API_KEY"]
-    except:
-        pass
+
+
+    if not groq_key:
+        groq_key = os.getenv("GROQ_API_KEY")
+
+
+    if not groq_key:
+        return "ERROR: GROQ_API_KEY not found in Streamlit secrets or environment."
 
     llm = ChatGroq(
         model="llama-3.1-8b-instant",
