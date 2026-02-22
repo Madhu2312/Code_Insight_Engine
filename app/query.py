@@ -134,9 +134,16 @@ def ask_question(question: str) -> str:
 
     context = "\n\n----------------------\n\n".join(context_blocks)
 
+    try:
+        import streamlit as st
+        groq_key = st.secrets["GROQ_API_KEY"]
+    except:
+        pass
+
     llm = ChatGroq(
         model="llama-3.1-8b-instant",
-        temperature=0
+        temperature=0,
+        groq_api_key=groq_key
     )
 
     prompt = f"""
