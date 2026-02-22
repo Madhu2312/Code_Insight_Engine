@@ -147,11 +147,17 @@ def ask_question(question: str) -> str:
     if not groq_key:
         return "ERROR: GROQ_API_KEY not found in Streamlit secrets or environment."
 
-    llm = ChatGroq(
-        model="llama-3.1-8b-instant",
-        temperature=0,
-        groq_api_key=groq_key
-    )
+    try:
+        llm = ChatGroq(
+            model="llama3-8b-8192",
+            temperature=0,
+            groq_api_key=groq_key
+        )
+    except Exception as e:
+    import traceback
+    return f"LLM INIT ERROR:\n{traceback.format_exc()}"
+
+
 
     prompt = f"""
 You are analyzing source code.
