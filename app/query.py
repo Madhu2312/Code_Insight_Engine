@@ -1,17 +1,14 @@
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
-# -------- STREAMLIT SECRET → ENVIRONMENT FIX --------
-try:
-    import streamlit as st
-    if "GROQ_API_KEY" in st.secrets:
-        os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
-except:
-    pass
-# ----- FORCE .env LOAD -----
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_PATH = os.path.join(BASE_DIR, ".env")
 load_dotenv(dotenv_path=ENV_PATH)
+
+# IMPORTANT FIX
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 
 # -------- PROJECT ROOT FIX --------
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
