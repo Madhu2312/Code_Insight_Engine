@@ -64,7 +64,7 @@ def ask_question(question: str) -> str:
 
     retriever = vectordb.as_retriever(
         search_type="mmr",
-        search_kwargs={"k": 4, "fetch_k": 12}
+        search_kwargs={"k": 4, "fetch_k": 10}
     )
 
     docs = retriever.invoke(question)
@@ -129,7 +129,13 @@ def ask_question(question: str) -> str:
         block = f"\nFILE: {file}\n{merged}"
         context_blocks.append(block)
 
+   
     context = "\n\n----------------------\n\n".join(context_blocks)
+
+# HARD CONTEXT LIMIT (CRITICAL FIX)
+    MAX_CONTEXT_CHARS = 6000
+    if len(context) > MAX_CONTEXT_CHARS:
+        context = context[:MAX_CONTEXT_CHARS]
 
     
 
