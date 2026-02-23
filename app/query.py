@@ -1,14 +1,10 @@
 from dotenv import load_dotenv
 import os
-import streamlit as st
 
+# ----- FORCE .env LOAD -----
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_PATH = os.path.join(BASE_DIR, ".env")
 load_dotenv(dotenv_path=ENV_PATH)
-
-# IMPORTANT FIX
-if "GROQ_API_KEY" in st.secrets:
-    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 
 # -------- PROJECT ROOT FIX --------
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
@@ -64,7 +60,7 @@ def ask_question(question: str) -> str:
 
     retriever = vectordb.as_retriever(
         search_type="mmr",
-        search_kwargs={"k": 4, "fetch_k": 10}
+        search_kwargs={"k": 12, "fetch_k": 40}
     )
 
     docs = retriever.invoke(question)
@@ -77,7 +73,7 @@ def ask_question(question: str) -> str:
     extra_docs = []
     for kw in keywords:
         try:
-            matches = vectordb.similarity_search(kw, k=1)
+            matches = vectordb.similarity_search(kw, k=2)
             extra_docs.extend(matches)
         except:
             pass
@@ -124,48 +120,17 @@ def ask_question(question: str) -> str:
     context_blocks = []
 
 # take most relevant 3 files instead of random chunks
-    for file, contents in list(file_groups.items())[:2]:
-        merged = "\n\n".join(contents)[:900]
+    for file, contents in list(file_groups.items())[:3]:
+        merged = "\n\n".join(contents)[:2500]
         block = f"\nFILE: {file}\n{merged}"
         context_blocks.append(block)
 
-   
     context = "\n\n----------------------\n\n".join(context_blocks)
 
-# HARD CONTEXT LIMIT (CRITICAL FIX)
-    MAX_CONTEXT_CHARS = 6000
-    if len(context) > MAX_CONTEXT_CHARS:
-        context = context[:MAX_CONTEXT_CHARS]
-
-    
-
-    groq_key = None
-
-
-    if "GROQ_API_KEY" in st.secrets:
-        groq_key = st.secrets["GROQ_API_KEY"]
-
-
-    if not groq_key:
-        groq_key = os.getenv("GROQ_API_KEY")
-
-
-    if not groq_key:
-        return "ERROR: GROQ_API_KEY not found in Streamlit secrets or environment."
-
-    try:
-        # HARD CONTEXT LIMIT (CRITICAL)
-        context = context[:3500]
-        llm = ChatGroq(
-            model="llama3-8b-instant",
-            temperature=0,
-            groq_api_key=groq_key
-        )
-    except Exception as e:
-        import traceback
-        return f"LLM INIT ERROR:\n{traceback.format_exc()}"
-
-
+    llm = ChatGroq(
+        model="llama-3.1-8b-instant",
+        temperature=0
+    )
 
     prompt = f"""
 You are analyzing source code.
