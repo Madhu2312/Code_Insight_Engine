@@ -64,7 +64,7 @@ def ask_question(question: str) -> str:
 
     retriever = vectordb.as_retriever(
         search_type="mmr",
-        search_kwargs={"k": 12, "fetch_k": 40}
+        search_kwargs={"k": 4, "fetch_k": 12}
     )
 
     docs = retriever.invoke(question)
@@ -77,7 +77,7 @@ def ask_question(question: str) -> str:
     extra_docs = []
     for kw in keywords:
         try:
-            matches = vectordb.similarity_search(kw, k=2)
+            matches = vectordb.similarity_search(kw, k=1)
             extra_docs.extend(matches)
         except:
             pass
@@ -124,8 +124,8 @@ def ask_question(question: str) -> str:
     context_blocks = []
 
 # take most relevant 3 files instead of random chunks
-    for file, contents in list(file_groups.items())[:3]:
-        merged = "\n\n".join(contents)[:2500]
+    for file, contents in list(file_groups.items())[:2]:
+        merged = "\n\n".join(contents)[:900]
         block = f"\nFILE: {file}\n{merged}"
         context_blocks.append(block)
 
@@ -148,6 +148,8 @@ def ask_question(question: str) -> str:
         return "ERROR: GROQ_API_KEY not found in Streamlit secrets or environment."
 
     try:
+        # HARD CONTEXT LIMIT (CRITICAL)
+        context = context[:3500]
         llm = ChatGroq(
             model="llama3-8b-instant",
             temperature=0,
